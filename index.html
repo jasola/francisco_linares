@@ -44,7 +44,7 @@ body { font-family:'Source Serif 4',Georgia,serif; background:var(--bg); color:v
 
 .hero-full {
   flex-direction: column; align-items: center; justify-content: center;
-  padding: 72px 40px 60px; text-align: center;
+  padding: 40px 40px 36px; text-align: center;
   position: relative; overflow: hidden;
 }
 .hero-full::before {
@@ -697,24 +697,27 @@ function revealCard(card) {
 
 /* ── STICKY HEADER ── */
 const stickyHeader = document.getElementById('stickyHeader');
-// Histéresis: colapsa a 160px, expande por debajo de 60px — evita parpadeo
+// Histéresis amplia: colapsa a 300px, expande por debajo de 40px
 let isCollapsed = false;
 window.addEventListener('scroll', () => {
-  if (!isCollapsed && window.scrollY > 160) {
+  if (!isCollapsed && window.scrollY > 300) {
     isCollapsed = true;
     stickyHeader.classList.add('collapsed');
     stickyHeader.classList.remove('expanded');
-  } else if (isCollapsed && window.scrollY < 60) {
+  } else if (isCollapsed && window.scrollY < 40) {
     isCollapsed = false;
     stickyHeader.classList.remove('collapsed');
     stickyHeader.classList.add('expanded');
   }
+
+  // Nav pill activo: busca qué sección está en pantalla usando offsetTop absoluto
   const h = stickyHeader.getBoundingClientRect().height;
+  const scrollMid = window.scrollY + h + 40;
   const ids = ['historia','timeline','aprendizajes','reflexion','cierre'];
   let cur = 0;
   ids.forEach((id, i) => {
-    const el = document.getElementById(id) || document.querySelector('.cierre');
-    if (el && window.scrollY >= el.offsetTop - h - 20) cur = i;
+    const el = document.getElementById(id) || (id === 'cierre' ? document.querySelector('.cierre') : null);
+    if (el && el.offsetTop <= scrollMid) cur = i;
   });
   document.querySelectorAll('.nav-pill').forEach((p, i) => p.classList.toggle('active', i === cur));
 }, { passive: true });
