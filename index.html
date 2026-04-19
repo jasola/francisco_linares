@@ -697,10 +697,18 @@ function revealCard(card) {
 
 /* ── STICKY HEADER ── */
 const stickyHeader = document.getElementById('stickyHeader');
+// Histéresis: colapsa a 160px, expande por debajo de 60px — evita parpadeo
+let isCollapsed = false;
 window.addEventListener('scroll', () => {
-  const scrolled = window.scrollY > 80;
-  stickyHeader.classList.toggle('collapsed', scrolled);
-  stickyHeader.classList.toggle('expanded', !scrolled);
+  if (!isCollapsed && window.scrollY > 160) {
+    isCollapsed = true;
+    stickyHeader.classList.add('collapsed');
+    stickyHeader.classList.remove('expanded');
+  } else if (isCollapsed && window.scrollY < 60) {
+    isCollapsed = false;
+    stickyHeader.classList.remove('collapsed');
+    stickyHeader.classList.add('expanded');
+  }
   const h = stickyHeader.getBoundingClientRect().height;
   const ids = ['historia','timeline','aprendizajes','reflexion','cierre'];
   let cur = 0;
@@ -715,7 +723,7 @@ function scrollToSection(id) {
   const el = document.getElementById(id) || document.querySelector('.cierre');
   if (!el) return;
   const h = stickyHeader.getBoundingClientRect().height;
-  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - h - 12, behavior: 'smooth' });
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - h - 32, behavior: 'smooth' });
 }
 
 /* ── FADE IN ── */
